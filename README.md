@@ -186,6 +186,7 @@ spec:
           name: cloudinitdisk
 EOF
 ```
+
 ## Configuring AAP
 
 Install AWX cli to automation the configuration required in AAP
