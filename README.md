@@ -190,13 +190,11 @@ EOF
 
 ## Configuring AAP
 
-Install AWX cli to automation the configuration required in AAP
+Install AWX cli to automation the configuration required in AAP - AWX cli documentation: https://docs.ansible.com/ansible-tower/latest/html/towercli/usage.html#getting-started
 
 ```bash
 pip install ansible-tower-cli --user
 ```
-
-https://docs.ansible.com/ansible-tower/latest/html/towercli/usage.html#getting-started
 
 Create AAP Project
 
