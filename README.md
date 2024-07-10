@@ -190,13 +190,19 @@ EOF
 
 ## Configuring AAP
 
-Install AWX cli to automation the configuration required in AAP - AWX cli documentation: https://docs.ansible.com/ansible-tower/latest/html/towercli/usage.html#getting-started
+Install AWX CLI to automation the configuration required in AAP - AWX CLI documentation: https://docs.ansible.com/ansible-tower/latest/html/towercli/usage.html#getting-started
+
+### Install Ansible Tower CLI
+
+Command to install Ansible Tower CLI
 
 ```bash
 pip install ansible-tower-cli --user
 ```
 
-Create AAP Project
+### Create AAP Project
+
+Command that will create a new Project in AAP using Git as the source
 
 ```bash
 awx-cli project create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n devspaces --organization Default --scm-type git --scm-url https://github.com/Deim0s13/DevWorkstation.git
