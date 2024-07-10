@@ -92,7 +92,7 @@ EOF
 
 ## Create RHEL VM
 
-````bash
+```bash
 cat << 'EOF' | oc apply --filename -
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
@@ -186,6 +186,7 @@ spec:
           name: cloudinitdisk
 EOF
 ```
+
 
 ## Configuring AAP
 
