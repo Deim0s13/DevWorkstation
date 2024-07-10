@@ -199,6 +199,6 @@ pip install ansible-tower-cli --user
 Create AAP Project
 
 ```bash
-awx-cli project create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n devspaces --scm-url https://github.com/Deim0s13/DevWorkstation.git
+awx-cli project create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n devspaces --organization Default --scm-type git --scm-url https://github.com/Deim0s13/DevWorkstation.git
 ```
 
