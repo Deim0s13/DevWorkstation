@@ -186,3 +186,19 @@ spec:
           name: cloudinitdisk
 EOF
 ```
+## Configuring AAP
+
+Install AWX cli to automation the configuration required in AAP
+
+```bash
+pip install ansible-tower-cli --user
+```
+
+https://docs.ansible.com/ansible-tower/latest/html/towercli/usage.html#getting-started
+
+Create AAP Project
+
+```bash
+awx-cli project create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n devspaces --scm-url https://github.com/Deim0s13/DevWorkstation.git
+```
+
