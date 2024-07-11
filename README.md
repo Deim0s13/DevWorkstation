@@ -208,3 +208,16 @@ Command that will create a new Project in AAP using Git as the source
 awx-cli project create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n devspaces --organization Default --scm-type git --scm-url https://github.com/Deim0s13/DevWorkstation.git
 ```
 
+### Create a Smart Inventory
+
+Command to create a Smart Inventory that filters based on rhel9
+
+```bash
+awx-cli inventory create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n rhel9 --organization Default --kind smart --host-filter name__icontains=rhel
+```
+
+### Create AAP Job Template
+
+```bash
+awx-cli job_template create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n devworkstaion-playbook --job-type run -i rhel9 --project devspaces --playbook setup_dev_workstation.yml
+```
