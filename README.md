@@ -12,7 +12,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription                                                                                                                                           
 metadata:                                                                                                                                                    
   name: devspaces                                                                                                                                            
-  namespace: openshift-operators                                                                                                                             
+  namespace: openshift-devspaces                                                                                                                             
 spec:                                                                                                                                                        
   channel: stable                                                                                                                                            
   installPlanApproval: Automatic                                                                                                                             
@@ -33,7 +33,7 @@ apiVersion: org.eclipse.che/v2
 kind: CheCluster
 metadata:
   name: devspaces
-  namespace: openshift-operators
+  namespace: openshift-devspaces
   finalizers:
     - checluster.che.eclipse.org
     - cluster-resources.finalizers.che.eclipse.org
@@ -115,7 +115,7 @@ apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
   name: rhel9-demo
-  namespace: default
+  namespace: developer-workstations
   finalizers:
     - kubevirt.io/virtualMachineControllerFinalize
   labels:
@@ -159,7 +159,7 @@ spec:
               noCloud: {}
             source:
               secret:
-                secretName: rhel-ssh
+                secretName: rhel-ssh-key
       architecture: amd64
       domain:
         cpu:
@@ -252,5 +252,5 @@ awx-cli inventory create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap
 ### Create AAP Job Template
 
 ```bash
-awx-cli job_template create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n devworkstaion-playbook --job-type run -i rhel9 --project devspaces --playbook setup_dev_workstation.yml
+awx-cli job_template create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n devworkstaion-playbook --job-type run -i rhel9 --project devspaces --playbook configure_dev_workstation.yml
 ```
