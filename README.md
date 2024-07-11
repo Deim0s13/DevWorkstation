@@ -32,7 +32,7 @@ apiVersion: org.eclipse.che/v2
 kind: CheCluster
 metadata:
   name: devspaces
-  namespace: default
+  namespace: openshift-operators
   finalizers:
     - checluster.che.eclipse.org
     - cluster-resources.finalizers.che.eclipse.org
@@ -115,7 +115,7 @@ apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
   name: rhel9-demo
-  namespace: developer-workstations
+  namespace: default
   finalizers:
     - kubevirt.io/virtualMachineControllerFinalize
   labels:
