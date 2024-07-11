@@ -12,7 +12,7 @@
     - name: Install common development tools
       ansible.builtin.dnf:
         name:
-          - git
+#         - git
           - vim
           - docker
           - gcc
@@ -50,11 +50,11 @@
         state: started
         enabled: true
 
-    - name: Set up global Git configuration
-      community.general.git_config:
-        name: user.name
-        value: "Developer Name"
-        scope: global
+    #- name: Set up global Git configuration
+     # community.general.git_config:
+      #  name: user.name
+       # value: "Developer Name"
+        # scope: global
 
     - name: Copy custom Vim configuration
       ansible.builtin.copy:
