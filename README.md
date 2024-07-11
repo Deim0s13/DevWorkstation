@@ -89,6 +89,19 @@ spec:
 EOF
 ```
 
+## Create Secret
+
+```bash
+kind: Secret
+apiVersion: v1
+metadata:
+  name: rhel-ssh
+  namespace: default
+data:
+  key: c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFDQVFEUllWOUNURmpNVGpNZXF1R29tazhSSWlFMFBsRmMxemRzdytwOHQ2Ynp4OG9rNmNCdmovMCswMGI2SEdIQ3cxRmFBR0YrbC9ZNEYreHpzN1hVanZyZWVTQ2NQVVVGVVBMbTBVcDFpcmlnWHo0a3F1R0prRnBzUTk0RjdtZ2laT3FFbTBUcll0SmUvSFp2aDkrdTlEcStEWnQ3R3BIYUFFSnAwemJpb0pxaG1Md3k4Ri9HTzBKWEpQQ3dJdkVuNC9naXVqdEJ0WUFPNE10STdXclBGMTlBNFlFMGtwdGhBNWx2UE9xNnFpWDg1SW5kVTVwSGNMeHdOSmtvWWJWYzRnMENMZ3FBckZNL250VEZpQ2RVS1ZaM1lDczROc1VKVzc0SE9mc3BYdUxnckhnMnUzQWhuRnlUQUJyR1paY0F6NW50VkQ1cWtYZVZ5NVRaRnJPSXViYWgxd25FZkVtZzViYkJRS0U5ZXBuMGxpcnE0L3dJVzEzWXVoeHZhYi9kb29kTjhiU05CV0xiSXBzYjNCYzVWSTdlaDlNOWN6WXFUNGp3R1VsVW1hYTR3YlVQc04zR091MFNEdHJHemxQT1B4SlRkZ3MwYWY0VmowNDRkZEhxUzFENVgwdjNJaXlZVW43U1FralFEbmVTUFI2T0U0b3BXTEtDNFBmMnoxempwaWZKTFJydzJhRXozaWpycXVYc1RGNlBlMnZyeHlEY0dOQlNQK1BpeHVVczRiRzNOaFNHV2hzaHQ3UWJJbGFobmx0b0ZEcW5paHVwdEhCd1pYc210SlZ6Y3dEOHNQUHVNSWZROWlDbUV4Y3lSbkhZRUl3aXp2UFVyNXdqMDZaUlRLMUNVUUpXTzJid1pkajRnbVFGcm1CZ0VBQldXdVBvT2taTm5WMEFMVUI3N3c9PSBwbGVhdGhlbkBwbGVhdGhlbi1tYWM=
+type: Opaque
+```
+
 
 ## Create RHEL VM
 
@@ -97,12 +110,12 @@ cat << 'EOF' | oc apply --filename -
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  name: rhel9-vm #Change VM name if necessary
+  name: rhel9-demo
   namespace: default
   finalizers:
     - kubevirt.io/virtualMachineControllerFinalize
   labels:
-    app: rhel9-lime-rat-17
+    app: rhel9-demo
     kubevirt.io/dynamic-credentials-support: 'true'
     vm.kubevirt.io/template: rhel9-server-small
     vm.kubevirt.io/template.namespace: openshift
@@ -114,7 +127,7 @@ spec:
       kind: DataVolume
       metadata:
         creationTimestamp: null
-        name: rhel9-vm
+        name: rhel9-demo
       spec:
         sourceRef:
           kind: DataSource
@@ -133,9 +146,16 @@ spec:
         vm.kubevirt.io/workload: server
       creationTimestamp: null
       labels:
-        kubevirt.io/domain: rhel9-vm
+        kubevirt.io/domain: rhel9-demo
         kubevirt.io/size: small
     spec:
+      accessCredentials:
+        - sshPublicKey:
+            propagationMethod:
+              noCloud: {}
+            source:
+              secret:
+                secretName: rhel-ssh
       architecture: amd64
       domain:
         cpu:
@@ -151,7 +171,7 @@ spec:
                 bus: virtio
               name: cloudinitdisk
           interfaces:
-            - macAddress: '02:61:92:00:00:03'
+            - macAddress: '02:9b:54:00:00:05'
               masquerade: {}
               model: virtio
               name: default
@@ -175,15 +195,16 @@ spec:
       terminationGracePeriodSeconds: 180
       volumes:
         - dataVolume:
-            name: rhel9-vm
+            name: rhel9-demo
           name: rootdisk
         - cloudInitNoCloud:
             userData: |-
               #cloud-config
               user: cloud-user
-              password: g0h5-ckn2-u7xd
+              password: e8yf-fwwg-ce7p
               chpasswd: { expire: False }
           name: cloudinitdisk
+
 EOF
 ```
 
@@ -215,6 +236,8 @@ Command to create a Smart Inventory that filters based on rhel9
 ```bash
 awx-cli inventory create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n rhel9 --organization Default --kind smart --host-filter name__icontains=rhel
 ```
+
+Remember to clickops create the machine credential
 
 ### Create AAP Job Template
 

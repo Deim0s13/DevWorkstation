@@ -4,10 +4,6 @@
   become: true
 
   tasks:
-    - name: Ensure the system is up to date
-      ansible.builtin.dnf:
-        name: '*'
-        state: present
 
     - name: Install common development tools
       ansible.builtin.dnf:
