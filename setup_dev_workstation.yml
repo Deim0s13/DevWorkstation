@@ -4,7 +4,6 @@
   become: true
 
   tasks:
-
     - name: Install common development tools
       ansible.builtin.dnf:
         name:

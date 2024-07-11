@@ -1,0 +1,14 @@
+---
+- name: Install vscode and podman on a rhel workstation
+  hosts: all
+  become: true
+  tasks:
+    - name: Install vscode
+      ansible.builtin.package:
+        name: code
+        state: present
+    - name: Install podman
+      ansible.builtin.package:
+        name: podman
+        state: present
+
