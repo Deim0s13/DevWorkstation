@@ -32,7 +32,7 @@ apiVersion: org.eclipse.che/v2
 kind: CheCluster
 metadata:
   name: devspaces
-  namespace: openshift-operators
+  namespace: default
   finalizers:
     - checluster.che.eclipse.org
     - cluster-resources.finalizers.che.eclipse.org
