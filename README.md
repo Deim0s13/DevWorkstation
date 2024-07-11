@@ -1,6 +1,11 @@
 # DevSpace Developer Workstation Demo
 This repository contains a short walkthrough demonstration of using Ansible to configure an OpenShift Dev Spaces instance and an OpenShift Virtualization machine.
 
+## Create a new Namespace
+
+```bash
+oc create namespace openshift-devspaces
+```
 
 ## Install dev spaces operator                                                                                                                                
                                                                                                                                                              
