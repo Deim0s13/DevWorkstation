@@ -252,5 +252,5 @@ awx-cli inventory create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap
 ### Create AAP Job Template
 
 ```bash
-awx-cli job_template create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n devworkstaion-playbook --job-type run -i rhel9 --project devspaces --playbook configure_dev_workstation.yml
+awx-cli job_template create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n "Configure Developer Workstation" --job-type run -i rhel9 --project devspaces --playbook configure-dev-workstation.yml
 ```
