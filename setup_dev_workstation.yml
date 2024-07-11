@@ -1,6 +1,6 @@
 ---
 - name: Setup Developer Workstation
-  hosts: dev_workstations
+  hosts: all
   become: true
 
   tasks:
