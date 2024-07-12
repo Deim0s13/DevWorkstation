@@ -229,6 +229,7 @@ pip install ansible-tower-cli --user
 
 Manually create a credential in AAP before going any further
 
+- Name the Credential 'RHEL SSH Credential'
 - Make sure to include the username, e.g. cloud-user
 - You will need to copy the private key information
 - Make sure the 'Priveliged Escalation Method' is set to 'sudo'
@@ -238,19 +239,19 @@ Manually create a credential in AAP before going any further
 Command that will create a new Project in AAP using Git as the source
 
 ```bash
-awx-cli project create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n devspaces --organization Default --scm-type git --scm-url https://github.com/Deim0s13/DevWorkstation.git --scm-update-on-launch true
+awx-cli project create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n "Developer Workstation" --organization Default --scm-type git --scm-url https://github.com/Deim0s13/DevWorkstation.git --scm-update-on-launch true
 ```
 
 ### Create a Smart Inventory
 
-Command to create a Smart Inventory that filters based on rhel9
+Command to create a Smart Inventory that filters based on RHEL VMs
 
 ```bash
-awx-cli inventory create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n rhel9 --organization Default --kind smart --host-filter name__icontains=rhel
+awx-cli inventory create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n "RHEL VMs" --organization Default --kind smart --host-filter name__icontains=rhel
 ```
 
 ### Create AAP Job Template
 
 ```bash
-awx-cli job_template create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n "Configure Developer Workstation" --job-type run -i rhel9 --project devspaces --playbook configure-dev-workstation.yml
+awx-cli job_template create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n "Configure Developer Workstation" --job-type run -i "RHEL VMs" --project "Developer Workstation" --playbook configure-dev-workstation.yml --credential "RHEL SSH Credential"
 ```
