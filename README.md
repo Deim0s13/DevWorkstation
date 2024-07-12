@@ -5,6 +5,7 @@ This repository contains a short walkthrough demonstration of using Ansible to c
 
 To prepare for our demo we need to install the OpenShift Dev Spaces operator.
 
+```bash
 cat << 'EOF' | oc apply --filename -
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
