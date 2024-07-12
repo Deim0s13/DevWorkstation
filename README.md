@@ -234,7 +234,28 @@ Manually create a credential in AAP before going any further
 
 ### Create separate AAP Project - Register RHEL and Attach Subscription
 
-TBD
+```bash
+awx-cli project create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n "RHEL Subscription" --organization Default --scm-type git --scm-url https://github.com/Deim0s13/DevWorkstation.git --scm-update-on-launch true
+```
+
+command to activate subscription on the RHEL box using an activation key
+sudo subscription manager-manager register --org <add org> --activationkey <add key>
+
+command to activate VSCode repos
+sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+
+Create repo file
+sudo vi /etc/yum.repos.d/vscode.repo
+
+vscode.repo
+[code]
+name=Visual Studio Code
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+
+Finally run sudo dnf check-update
 
 ### Create AAP Project - Developer Workstation
 
@@ -259,7 +280,9 @@ Add command to do so
 
 ### Create AAP Job Template - Register RHEL and apply Subscription
 
-TBD
+```bash
+awx-cli job_template create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n "Register RHEL VM" --job-type run -i "RHEL VMs" --project "RHEL Subscription" --playbook register-rhel-vm.yml --credential "RHEL SSH Credential"
+```
 
 ### Create AAP Job Template - Apply Developer Workstation Configuration
 
