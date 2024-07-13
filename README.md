@@ -260,7 +260,7 @@ awx-cli inventory create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap
 The Smart Inventory has a dependency on the Virtualisation Inventory. You need to sync this for the Smart Inventory to pick up the rhel-demo-vm
 Add command to do so
 
-### Create AAP Job Template - Register RHEL and apply Subscription
+### Create AAP Job Template - Post VM Install Configuration
 
 ```bash
 awx-cli job_template create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n "RHEL Configuration" --job-type run -i "RHEL VMs" --project "RHEL Post Install Configuration" --playbook post-install-configuration.yml --credential "RHEL SSH Credential"
