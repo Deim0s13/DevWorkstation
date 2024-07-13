@@ -4,8 +4,20 @@
   become: true
   tasks:
     - name: Activate subscription
-      ansible.builtin.command: sudo subscription-manager register --org --activationkey <activation_key>
+      ansible.builtin.command: sudo subscription-manager register --org <add org> --activationkey <add key>
     - name: Activate VSCode repos
       ansible.builtin.command: sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
     - name: Create repo file
       ansible.builtin.command: sudo vi /etc/yum.repos.d/vscode.repo
+    - name: Add content to vscode.repo
+      ansible.builtin.blockinfile:
+        path: /etc/yum.repos.d/vscode.repo
+        block: |
+          [code]
+          name=Visual Studio Code
+          baseurl=https://packages.microsoft.com/yumrepos/vscode
+          enabled=1
+          gpgcheck=1
+          gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+    - name: Run sudo dnf check-update
+      ansible.builtin.command: sudo dnf check-update
