@@ -4,7 +4,7 @@
   become: true
   tasks:
     - name: Activate RHEL machine with subscription manager using an activationkey
-      ansible.builtin.command: subscription-manager register --org 11009103 --activationkey pleathen-rhel
+      ansible.builtin.command: subscription-manager register --org 11009103 --activationkey pleathen-rhel --force
     - name: Activate vscode repo using rpm
       ansible.builtin.command: rpm --import https://packages.microsoft.com/keys/microsoft.asc
     - name: Create repo file /etc/yum.repos.d/vscode.repo
