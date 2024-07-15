@@ -4,7 +4,7 @@
   become: true
   tasks:
     - name: Activate subscription
-      ansible.builtin.command: sudo subscription-manager register --org <add org> --activationkey <add key>
+      ansible.builtin.command: sudo subscription-manager register --org 11009103 --activationkey pleathen-rhel
     - name: Activate VSCode repos
       ansible.builtin.command: sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
     - name: Create repo file
