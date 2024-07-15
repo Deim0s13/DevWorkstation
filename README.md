@@ -90,8 +90,11 @@ EOF
 
 ## Create Secret
 
-Before we create a VM and create the Ansible components, we need to create a secret with a public key - You can use one you created on your local machine using ssh-keygen
-Replace the public key below.
+Before creating a demo VM and the subsequent Ansible components, we need to create a secret with a public key.
+
+You can use a public key you have created on your local machine using ssh-keygen.
+
+Replace the public key in the below command with your key.
 
 ```bash
 cat << 'EOF' | oc apply --filename -
@@ -107,6 +110,8 @@ EOF
 ```
 
 ## Create RHEL VM
+
+Go ahead and create a simple RHEL VM using the following command. This will create a VM named rhel9-demo.
 
 ```bash
 cat << 'EOF' | oc apply --filename -
@@ -213,11 +218,13 @@ EOF
 
 ## Configuring AAP
 
-Install AWX CLI to automation the configuration required in AAP - AWX CLI documentation: https://docs.ansible.com/ansible-tower/latest/html/towercli/usage.html#getting-started
+Before you can continue, you need to install the AWX CLI, as we will use these commands to create Ansible jobs, templates, etc.
+
+You can install this on your local machine and use the oc login command to access the AAP environment. Otherwise, you can start an Ansible DevSpace and use the terminal within VSCode.
 
 ### Install Ansible Tower CLI
 
-Command to install Ansible Tower CLI
+Use the following pip command to install the AWX CLI
 
 ```bash
 pip install ansible-tower-cli --user
@@ -225,23 +232,26 @@ pip install ansible-tower-cli --user
 
 ### Create Credential
 
-Manually create a credential in AAP before going any further
+We decided to create a Credential manually for this environment as it involves using a private key, and it was a much simpler option than trying to automate the process.
+
+Use the following steps to create your Credential.
 
 - Name the Credential 'RHEL SSH Credential'
 - Make sure to include the username, e.g. cloud-user
-- You will need to copy the private key information
-- Make sure the 'Priveliged Escalation Method' is set to 'sudo'
+- You will need to copy the private key information that you created earlier
+- Make sure the 'Privileged Escalation Method' is set to 'sudo'
 
 ### Create AAP Project - Register RHEL Post Install Configuration
+
+The following command will create an AAP Project that we will use to run post-installation activities on the RHEL 9 demo VM.
 
 ```bash
 awx-cli project create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n "RHEL Post Install Configuration" --organization Default --scm-type git --scm-url https://github.com/Deim0s13/DevWorkstation.git --scm-update-on-launch true
 ```
 
-
 ### Create AAP Project - Developer Workstation
 
-Command that will create a new Project in AAP using Git as the source
+The following command will create another Ansible Project that we will use to configure the Developer Workstation.
 
 ```bash
 awx-cli project create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n "Developer Workstation" --organization Default --scm-type git --scm-url https://github.com/Deim0s13/DevWorkstation.git --scm-update-on-launch true
@@ -249,7 +259,7 @@ awx-cli project create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) 
 
 ### Create a Smart Inventory
 
-Command to create a Smart Inventory that filters based on RHEL VMs
+We have created a Smart Inventory to target the RHEL 9 demo VM. For this to work successfully, it is dependent on the existing inventory.
 
 ```bash
 awx-cli inventory create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n "RHEL VMs" --organization Default --kind smart --host-filter name__icontains=rhel
@@ -257,16 +267,21 @@ awx-cli inventory create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap
 
 ### Sync Inventory
 
-The Smart Inventory has a dependency on the Virtualisation Inventory. You need to sync this for the Smart Inventory to pick up the rhel-demo-vm
-Add command to do so
+The Smart Inventory is dependent on the Virtualisation Inventory. It would help if you synced this for the Smart Inventory to pick up the RHEL 9 Demo VM.
+
+Future update: Add a command to run both needed sync jobs.
 
 ### Create AAP Job Template - Post VM Install Configuration
+
+Create a Job Template to run the post-install-configuration playbook to register the RHEL VM and enable the VSCode repository.
 
 ```bash
 awx-cli job_template create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n "RHEL Configuration" --job-type run -i "RHEL VMs" --project "RHEL Post Install Configuration" --playbook post-install-configuration.yml --credential "RHEL SSH Credential"
 ```
 
 ### Create AAP Job Template - Apply Developer Workstation Configuration
+
+Create a Job Template to run the configure-dev-workstation playbook, which will configure and install tools like VSCode.
 
 ```bash
 awx-cli job_template create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n "Configure Developer Workstation" --job-type run -i "RHEL VMs" --project "Developer Workstation" --playbook configure-dev-workstation.yml --credential "RHEL SSH Credential"
