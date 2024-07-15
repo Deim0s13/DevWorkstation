@@ -3,13 +3,15 @@
   hosts: all
   become: true
   tasks:
-    - name: Activate subscription
-      ansible.builtin.command: sudo subscription-manager register --org 11009103 --activationkey pleathen-rhel
-    - name: Activate VSCode repos
-      ansible.builtin.command: sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-    - name: Create repo file
-      ansible.builtin.command: sudo vi /etc/yum.repos.d/vscode.repo
-    - name: Add content to vscode.repo
+    - name: Activate RHEL machine with subscription manager using an activationkey
+      ansible.builtin.command: subscription-manager register --org 11009103 --activationkey pleathen-rhel
+    - name: Activate vscode repo using rpm
+      ansible.builtin.command: rpm --import https://packages.microsoft.com/keys/microsoft.asc
+    - name: Create repo file /etc/yum.repos.d/vscode.repo
+      ansible.builtin.file:
+        path: /etc/yum.repos.d/vscode.repo
+        state: touch
+    - name: Add the following to the vscode.repo file
       ansible.builtin.blockinfile:
         path: /etc/yum.repos.d/vscode.repo
         block: |
@@ -19,5 +21,5 @@
           enabled=1
           gpgcheck=1
           gpgkey=https://packages.microsoft.com/keys/microsoft.asc
-    - name: Run sudo dnf check-update
-      ansible.builtin.command: sudo dnf check-update
+    - name: Add vscode repo
+      ansible.builtin.command: dnf check-update
