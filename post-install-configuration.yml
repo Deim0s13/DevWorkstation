@@ -21,5 +21,3 @@
           enabled=1
           gpgcheck=1
           gpgkey=https://packages.microsoft.com/keys/microsoft.asc
-    - name: Add vscode repo
-      ansible.builtin.command: sudo dnf check-update
