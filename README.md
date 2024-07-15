@@ -286,3 +286,12 @@ Create a Job Template to run the configure-dev-workstation playbook, which will 
 ```bash
 awx-cli job_template create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n "Configure Developer Workstation" --job-type run -i "RHEL VMs" --project "Developer Workstation" --playbook configure-dev-workstation.yml --credential "RHEL SSH Credential"
 ```
+### Run both Ansible Jobs
+
+The next step is to run the two jobs. We recommend running these within the Ansible Platform.
+
+- Run the RHEL Configuration job first.
+- Run the Configure Developer Workstation job upon successful completion of the first job.
+- Once completed, you can log in to the RHEL 9 demo VM to validate that you successfully installed Podman and VSCode.
+
+Future improvement: Add command to run jobs
