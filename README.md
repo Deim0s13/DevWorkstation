@@ -283,6 +283,10 @@ Future update: Add a command to run both needed sync jobs.
 
 Create a Job Template to run the post-install-configuration playbook to register the RHEL VM and enable the VSCode repository.
 
+Note: Remember to add variables
+org_id: <Insert Org ID>
+activationkey: <Insert activationkey>
+
 ```bash
 awx-cli job_template create -h $(oc get route -n aap -o jsonpath='{.spec.host}' aap) -u admin -p $(oc get secret -n aap aap-admin-password -o jsonpath='{.data.password}' | base64 --decode) -n "RHEL Configuration" --job-type run -i "RHEL VMs" --project "RHEL Post Install Configuration" --playbook post-install-configuration.yml --credential "RHEL SSH Credential"
 ```
