@@ -1,14 +1,6 @@
 # DevSpace Developer Workstation Demo
 This repository contains a short walkthrough demonstration of using Ansible to configure an OpenShift Dev Spaces instance and an OpenShift Virtualization machine.\
 
-## Create Namespace
-
-Using an active oc session create the openshift-devspaces namespace.
-
-```bash
-oc create namespace openshift-devspaces
-```
-
 ## Install dev spaces operator
 
 To prepare for our demo we need to install the OpenShift Dev Spaces operator.
@@ -19,7 +11,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: devspaces
-  namespace: openshift-devspaces
+  namespace: openshift-operators
 spec:
   channel: stable
   installPlanApproval: Automatic
@@ -40,7 +32,7 @@ apiVersion: org.eclipse.che/v2
 kind: CheCluster
 metadata:
   name: devspaces
-  namespace: openshift-devspaces
+  namespace: openshift-operators
   finalizers:
     - checluster.che.eclipse.org
     - cluster-resources.finalizers.che.eclipse.org
